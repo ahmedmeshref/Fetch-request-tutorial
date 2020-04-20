@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+    initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4 mb-4">Fetch API Tutorial</h1>
+        <div class="d-flex">
+            <button id="addText" class="btn btn-outline-primary mr-4">Get Text</button>
+            <button id="showPosts" class="btn btn-outline-primary mr-4">Show posts</button>
+        </div>
+        <div id="showText"></div>
+        <form id="addPost">
+            <div class="form-group mt-3">
+                <input type="text" id="title" placeholder="title"
+                       class="form-control" required>
+            </div>
+            <div class="form-group">
+                <textarea id="body" placeholder="what's up?" class="form-control"
+                          required></textarea>
+            </div>
+            <input type="submit" value="Add Post" class="btn btn-outline-success">
+
+        </form>
+
+        <hr>
+        <div id="presentPosts"></div>
+    </div>
+
+    <script>
+        document.getElementById('addText').addEventListener('click', getText);
+        document.getElementById('showPosts').addEventListener('click', printPosts);
+        document.getElementById("addPost").addEventListener('submit', addPost);
+
+        function getText() {
+            // method_1 using normal functions
+            // fetch('text.txt')
+            // // this fetch gives us back a promise which can be used right after the
+            // // fetch or using .then
+            // .then(function(response) {
+            //     // when we return the response text, it give the value of the promise data
+            //     return response.text();
+            // })
+            // .then(function(resValue) {
+            //     document.getElementById("showText").innerHTML = resValue;
+            // })
+
+            // method_2: using the arrow function => {}
+            fetch("text.txt")
+            .then((response) => {
+                return response.text();
+            })
+            .then((responseValue) => {
+                document.getElementById("showText").innerHTML = responseValue;
+            })
+            // catch errors
+            .catch((error) => console.log(error.message))
+        }
+
+
+        function printPosts (){
+            // get request fetch(url)
+            fetch("https://jsonplaceholder.typicode.com/posts", {
+                method: 'GET'
+            })
+            .then((response) => response.json())
+            .then((posts) => {
+                let output = "<h2>Posts</h2>";
+                for (let i=0; i < posts.length; i++) {
+                    output += `
+                            <div class="card card-body mb-3">
+                                <h3>${posts[i].title}</h3>
+                                <p>${posts[i].body}</p>
+                            </div>`
+                }
+                document.getElementById('presentPosts').innerHTML = output;
+            })
+        }
+
+
+        // post request with fetch
+        function addPost(e) {
+            // prevent the default which is adding the output to a file
+            e.preventDefault();
+            let title = document.getElementById("title").value;
+            let body = document.getElementById("body").value;
+            fetch("https://jsonplaceholder.typicode.com/posts", {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                // we send json stringify which is a string of json
+                body: JSON.stringify({
+                    title: title, body: body
+                })
+            })
+            .then((response) => response.json())
+            .then((resValue) => {
+                DIV = document.createElement("div");
+                DIV.className = 'card card-body';
+                DIV.innerHTML = `<h1>${resValue.title}</h1>
+                                 <p>${resValue.body}</p>`;
+                document.getElementById('presentPosts').appendChild(DIV);
+                document.getElementById('title').value = null;
+                document.getElementById('body').value = null;
+            })
+            .catch((err) => console.log('Error: '+ err))
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
