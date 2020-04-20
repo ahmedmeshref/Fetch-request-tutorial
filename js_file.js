@@ -55,25 +55,25 @@ function addPost(e) {
     e.preventDefault();
     let title = document.getElementById("title").value;
     let body = document.getElementById("body").value;
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: 'POST',
+    fetch("https://jsonplaceholder.typicode.com/posts", { // init object methods
+        method: 'POST', // method can be POST, PUT, DELETE, GET (by default) .... etc.
         headers: {
             'Content-type': 'application/json'
         },
-        // we send json stringify which is a string of json
+        // Send json string
         body: JSON.stringify({
             title: title, body: body
         })
     })
-        .then((response) => response.json())
-        .then((resValue) => {
-            DIV = document.createElement("div");
-            DIV.className = 'card card-body';
-            DIV.innerHTML = `<h1>${resValue.title}</h1>
-                                 <p>${resValue.body}</p>`;
-            document.getElementById('presentPosts').appendChild(DIV);
-            document.getElementById('title').value = null;
-            document.getElementById('body').value = null;
-        })
-        .catch((err) => console.log('Error: '+ err))
+    .then((response) => response.json())
+    .then((resValue) => {
+        DIV = document.createElement("div");
+        DIV.className = 'card card-body';
+        DIV.innerHTML = `<h1>${resValue.title}</h1>
+                             <p>${resValue.body}</p>`;
+        document.getElementById('presentPosts').appendChild(DIV);
+        document.getElementById('title').value = null;
+        document.getElementById('body').value = null;
+    })
+    .catch((err) => console.log('Error: '+ err))
 }
